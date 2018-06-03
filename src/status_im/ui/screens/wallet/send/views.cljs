@@ -106,6 +106,11 @@
   (when (and gas gas-price)
     (money/wei->ether (.times gas gas-price))))
 
+(defn return-to-transaction [modal?]
+  (if modal?
+    (re-frame/dispatch [:navigate-to-modal :wallet-send-transaction-modal])
+    (act/default-handler)))
+
 (defview transaction-fee []
   (letsubs [{:keys [amount symbol] :as transaction} [:wallet.send/transaction]
             network [:get-current-account-network]
@@ -170,7 +175,7 @@
                          :accessibility-label :reset-to-default-button}
           (i18n/label :t/reset-default)]
          [button/button {:on-press            #(do (re-frame/dispatch [:wallet.send/set-gas-details gas gas-price])
-                                                   (act/default-handler))
+                                                   (return-to-transaction (:id transaction)))
                          :accessibility-label :done-button
                          :disabled?           (or (:invalid? gas-edit)
                                                   (:invalid? gas-price-edit))}
@@ -178,8 +183,7 @@
 
 (defn- advanced-cartouche [{:keys [gas gas-price]} modal?]
   [react/view
-   [wallet.components/cartouche {:disabled? modal?
-                                 :on-press  #(do (re-frame/dispatch [:wallet.send/clear-gas])
+   [wallet.components/cartouche {:on-press  #(do (re-frame/dispatch [:wallet.send/clear-gas])
                                                  (re-frame/dispatch [:navigate-to-modal :wallet-transaction-fee]))}
     (i18n/label :t/wallet-transaction-fee)
     [react/view {:style               styles/advanced-options-text-wrapper
