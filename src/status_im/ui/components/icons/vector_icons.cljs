@@ -83,6 +83,7 @@
             :icons/newchat             (components.svg/slurp-svg "./resources/icons/newchat.svg")
             :icons/logo                (components.svg/slurp-svg "./resources/icons/logo.svg")
             :icons/camera              (components.svg/slurp-svg "./resources/icons/camera.svg")
+            :icons/check               (components.svg/slurp-svg "./resources/icons/check.svg")
             :icons/warning             (components.svg/slurp-svg "./resources/icons/warning.svg")})
 
 (defn normalize-property-name [n]

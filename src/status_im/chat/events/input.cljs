@@ -9,6 +9,7 @@
             [status-im.chat.models.message :as message-model]
             [status-im.chat.events.commands :as commands-events]
             [status-im.bots.events :as bots-events]
+            [status-im.utils.ethereum.tokens :as tokens]
             [status-im.ui.components.react :as react-comp]
             [status-im.utils.handlers :as handlers]))
 
@@ -235,15 +236,16 @@
 ;; function creating "message shaped" data from command, because that's what `request-command-message-data` expects
 (defn- command->message
   [{:keys [bot-db current-chat-id chats]} {:keys [command] :as command-params}]
-  (message-model/add-message-type
-   {:chat-id current-chat-id
-    :content {:bot                   (:owner-id command)
-              :command               (:name command)
-              :type                  (:type command)
-              :command-scope-bitmask (:scope-bitmask command)
-              :params                (assoc (input-model/args->params command-params)
-                                            :bot-db (get bot-db (:owner-id command)))}}
-   (get chats current-chat-id)))
+  (let [params (assoc (input-model/args->params command-params)
+                      :bot-db (get bot-db (:owner-id command)))]
+    (message-model/add-message-type
+     {:chat-id current-chat-id
+      :content {:bot                   (:owner-id command)
+                :command               (:name command)
+                :type                  (:type command)
+                :command-scope-bitmask (:scope-bitmask command)
+                :params                params}}
+     (get chats current-chat-id))))
 
 (defn proceed-command
   "Proceed with command processing by creating command message + setting up and executing chain of events:
