@@ -72,7 +72,7 @@
   (merge
    {:background-color (if outgoing
                         colors/blue-darker
-                        colors/blue-transparent-20)
+                        colors/blue-transparent)
     :width            24
     :height           24
     :border-radius    16}

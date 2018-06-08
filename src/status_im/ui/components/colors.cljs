@@ -16,8 +16,7 @@
 (def gray-notifications "#4A5054cc") ;; Used for notifications background
 (def gray-border "#ececf0")
 (def blue "#4360df") ;; Used as main wallet color, and ios home add button
-(def blue-transparent "rgba(67, 96, 223, 0.10)")
-(def blue-transparent-20 "rgba(67, 96, 223, 0.2)")
+(def blue-transparent "rgba(67, 96, 223, 0.2)")
 (def blue-darker "#c4cced")
 (def blue-dark "#3147ac") ;; Used as secondary wallet color (icon background)
 (def hawkes-blue "#dce2fb") ;; Outgoing chat messages background

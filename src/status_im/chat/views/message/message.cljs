@@ -64,7 +64,7 @@
     [react/touchable-highlight {:on-press #(when tx-exists?
                                              (re-frame/dispatch [:show-transaction-details tx-hash]))}
      [react/view style/command-send-status-container
-      [vector-icons/icon (if confirmed? :icons/check :icons/dots-horizontal)
+      [vector-icons/icon (if confirmed? :icons/check :icons/dots)
        {:color           colors/blue
         :container-style (style/command-send-status-icon confirmed? outgoing)}]
       [react/view
