@@ -67,7 +67,7 @@
                                            (.-selection))
                                      end (.-end s)]
                                  (re-frame/dispatch [:update-text-selection end]))
-      :style                  (style/input-view height single-line-input?)
+      :style                  (style/input-view single-line-input?)
       :placeholder-text-color colors/gray
       :auto-capitalize        :sentences}]))
 
