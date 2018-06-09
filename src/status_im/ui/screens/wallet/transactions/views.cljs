@@ -33,6 +33,7 @@
     [(history-action (not (all-checked? filter-data)))]]])
 
 (defn- inbound? [type] (= :inbound type))
+(defn- failed? [type] (= :failed type))
 
 (defn- transaction-icon [k background-color color]
   {:icon      k
@@ -43,10 +44,11 @@
   (case k
     :inbound                (transaction-icon :icons/arrow-left components.styles/color-green-3-light components.styles/color-green-3)
     :outbound               (transaction-icon :icons/arrow-right components.styles/color-blue4-transparent components.styles/color-blue4)
+    :failed                 (transaction-icon :icons/arrow-right components.styles/color-light-red components.styles/color-red)
     (:postponed :pending)   (transaction-icon :icons/arrow-right components.styles/color-gray4-transparent components.styles/color-gray7)
     (throw (str "Unknown transaction type: " k))))
 
-(defn render-transaction [{:keys [hash from-contact to-contact to from type value time-formatted symbol] :as transaction} network]
+(defn render-transaction [{:keys [hash from-contact to-contact to from type value time-formatted symbol]} network]
   (let [[label contact address
          contact-accessibility-label
          address-accessibility-label] (if (inbound? type)
@@ -62,7 +64,8 @@
          [react/text {:style           styles/tx-amount
                       :ellipsize-mode  "tail"
                       :number-of-lines 1}
-          [react/text {:accessibility-label :amount-text}
+          [react/text {:accessibility-label :amount-text
+                       :style               (when (failed? type) {:color :red})}
            (-> value  (money/internal->formatted symbol decimals) money/to-fixed str)]
           " "
           [react/text {:accessibility-label :currency-text}

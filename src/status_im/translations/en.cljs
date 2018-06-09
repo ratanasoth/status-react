@@ -404,6 +404,7 @@
    :incoming                             "Incoming"
    :outgoing                             "Outgoing"
    :pending                              "Pending"
+   :failed                               "Failed"
    :postponed                            "Postponed"
 
    ;;webview

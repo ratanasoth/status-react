@@ -109,6 +109,9 @@
               ;; NOTE(goranjovic) - metadata on the type of token in question: contains name, symbol, decimas, address.
               :token         token
 
+              ;; NOTE(goranjovic) - if an event has been emitted, we can say there was no error
+              :error?        false
+
               ;; NOTE(goranjovic) - just a flag we need when we merge this entry with the existing entry in
               ;; the app, e.g. transaction info with gas details, or a previous transfer entry with old
               ;; confirmations count.
