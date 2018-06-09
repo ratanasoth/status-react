@@ -44,7 +44,7 @@
   (case k
     :inbound                (transaction-icon :icons/arrow-left components.styles/color-green-3-light components.styles/color-green-3)
     :outbound               (transaction-icon :icons/arrow-right components.styles/color-blue4-transparent components.styles/color-blue4)
-    :failed                 (transaction-icon :icons/arrow-right components.styles/color-light-red components.styles/color-red)
+    :failed                 (transaction-icon :icons/exclamation-mark components.styles/color-gray4-transparent components.styles/color-red)
     (:postponed :pending)   (transaction-icon :icons/arrow-right components.styles/color-gray4-transparent components.styles/color-gray7)
     (throw (str "Unknown transaction type: " k))))
 
@@ -64,8 +64,7 @@
          [react/text {:style           styles/tx-amount
                       :ellipsize-mode  "tail"
                       :number-of-lines 1}
-          [react/text {:accessibility-label :amount-text
-                       :style               (when (failed? type) {:color :red})}
+          [react/text {:accessibility-label :amount-text}
            (-> value  (money/internal->formatted symbol decimals) money/to-fixed str)]
           " "
           [react/text {:accessibility-label :currency-text}
@@ -173,16 +172,19 @@
       (clojure.string/upper-case (name symbol))]]
     [react/text {:style styles/details-header-date} date]]])
 
-(defn progress-bar [progress]
+(defn progress-bar [progress failed?]
   [react/view {:style styles/progress-bar}
-   [react/view {:style (styles/progress-bar-done progress)}]
-   [react/view {:style (styles/progress-bar-todo (- 100 progress))}]])
+   [react/view {:style (styles/progress-bar-done progress failed?)}]
+   [react/view {:style (styles/progress-bar-todo (- 100 progress) failed?)}]])
 
-(defn details-confirmations [confirmations confirmations-progress]
+(defn details-confirmations [confirmations confirmations-progress type]
   [react/view {:style styles/details-block}
-   [progress-bar confirmations-progress]
-   [react/text {:style styles/details-confirmations-count}
-    (str confirmations " " (i18n/label :t/confirmations))]
+   [progress-bar confirmations-progress (failed? type)]
+   (if (failed? type)
+     [react/text {:style styles/details-failed}
+      (i18n/label :t/failed)]
+     [react/text {:style styles/details-confirmations-count}
+      (str confirmations " " (i18n/label :t/confirmations))])
    [react/text {:style styles/details-confirmations-helper-text}
     (i18n/label :t/confirmations-helper-text)]])
 
@@ -235,9 +237,9 @@
                   {:label (i18n/label :t/open-on-etherscan) :action #(.openURL react/linking url)}])])
 
 (defview transaction-details []
-  (letsubs [{:keys [hash url] :as transaction} [:wallet.transactions/transaction-details]
-            confirmations                      [:wallet.transactions.details/confirmations]
-            confirmations-progress             [:wallet.transactions.details/confirmations-progress]]
+  (letsubs [{:keys [hash url type] :as transaction} [:wallet.transactions/transaction-details]
+            confirmations                           [:wallet.transactions.details/confirmations]
+            confirmations-progress                  [:wallet.transactions.details/confirmations-progress]]
     [react/view {:style components.styles/flex}
      [status-bar/status-bar]
      [toolbar/toolbar {}
@@ -246,6 +248,6 @@
       (when transaction [toolbar/actions (details-action hash url)])]
      [react/scroll-view {:style components.styles/main-container}
       [details-header transaction]
-      [details-confirmations confirmations confirmations-progress]
+      [details-confirmations confirmations confirmations-progress type]
       [react/view {:style styles/details-separator}]
       [details-list transaction]]]))
