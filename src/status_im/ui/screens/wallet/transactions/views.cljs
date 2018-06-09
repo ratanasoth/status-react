@@ -6,6 +6,7 @@
             [status-im.ui.components.react :as react]
             [status-im.ui.components.status-bar.view :as status-bar]
             [status-im.ui.components.styles :as components.styles]
+            [status-im.ui.components.colors :as colors]
             [status-im.ui.components.toolbar.actions :as actions]
             [status-im.ui.components.toolbar.view :as toolbar]
             [status-im.ui.components.status-bar.view :as status-bar]
@@ -42,10 +43,10 @@
 
 (defn- transaction-type->icon [k]
   (case k
-    :inbound                (transaction-icon :icons/arrow-left components.styles/color-green-3-light components.styles/color-green-3)
-    :outbound               (transaction-icon :icons/arrow-right components.styles/color-blue4-transparent components.styles/color-blue4)
-    :failed                 (transaction-icon :icons/exclamation-mark components.styles/color-gray4-transparent components.styles/color-red)
-    (:postponed :pending)   (transaction-icon :icons/arrow-right components.styles/color-gray4-transparent components.styles/color-gray7)
+    :inbound                (transaction-icon :icons/arrow-left (colors/alpha colors/green 0.2) colors/green)
+    :outbound               (transaction-icon :icons/arrow-right (colors/alpha colors/blue 0.1) colors/blue)
+    :failed                 (transaction-icon :icons/exclamation-mark colors/gray-light colors/red)
+    (:postponed :pending)   (transaction-icon :icons/arrow-right colors/gray-light colors/gray)
     (throw (str "Unknown transaction type: " k))))
 
 (defn render-transaction [{:keys [hash from-contact to-contact to from type value time-formatted symbol]} network]
